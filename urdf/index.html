@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Démo URDF – MrF</title>
+
+    <!-- plein écran sans marges -->
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden
+        }
+    </style>
+
+    <!-- Three.js, OrbitControls et URDFLoader depuis des CDN -->
+    <script type="module">
+        /* === Dépendances === */
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js';
+        import URDFLoader from 'https://cdn.jsdelivr.net/npm/urdf-loader@0.12.6/src/URDFLoader.js';
+
+        /* === URL de tes assets sur jsDelivr === */
+        const BASE = 'https://cdn.jsdelivr.net/gh/maelpseudo/mrf@v1.0/urdf/';
+
+        /* === Scène de base === */
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf0f0f0);
+
+        const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.05, 100);
+        camera.position.set(1.2, 1, 1.2);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(innerWidth, innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        new OrbitControls(camera, renderer.domElement);
+
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1));
+        scene.add(new THREE.GridHelper(2, 20));
+
+        /* === Chargement URDF cross-origin === */
+        const loader = new URDFLoader();
+        loader.manager.crossOrigin = 'anonymous';   // autorise textures externes
+        loader.packages = BASE;                     // si le URDF utilise package://
+
+        loader.load(BASE + 'robot.urdf', robot => {
+            scene.add(robot);
+
+            /* décommente ces lignes si tu veux recentrer la vue automatiquement
+            const box = new THREE.Box3().setFromObject(robot);
+            const size = box.getSize(new THREE.Vector3()).length();
+            const center = box.getCenter(new THREE.Vector3());
+            camera.position.copy(center).add(new THREE.Vector3(size*0.8, size*0.6, size*0.8));
+            camera.lookAt(center);
+            */
+
+            animate();
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+
+        /* Resize */
+        addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+    </script>
+</head>
+
+<body></body>
+
+</html>
