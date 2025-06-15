@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!-- Generated using onshape-to-robot -->
 <!-- Onshape https://cad.onshape.com/documents/93e48abd5146c7d1ed49480b/w/1ec53cad82eaba3f57507604/e/4581709cacf6385ab5fad6e1 -->
-<robot name="my_robot">
+<robot name="urdf">
   <!-- Link base -->
   <link name="base">
     <inertial>
@@ -120,6 +120,6 @@
     <parent link="base"/>
     <child link="shoulder"/>
     <axis xyz="0 0 1"/>
-    <limit effort="10" velocity="10" lower="0" upper="3.14159"/>
+    <limit effort="10" velocity="10" lower="-1.5708" upper="1.5708"/>
   </joint>
 </robot>
